@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Basic Calculator</title>
+    <style>
+        /* General styles */
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f0f0f0;
+        }
+
+        .calculator {
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            width: 280px;
+            padding: 20px;
+        }
+
+        /* Display screen */
+        .display {
+            background-color: #222;
+            color: white;
+            text-align: right;
+            font-size: 32px;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        /* Button grid */
+        .buttons {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+        }
+
+        button {
+            background-color: #e0e0e0;
+            border: none;
+            font-size: 18px;
+            padding: 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #d0d0d0;
+        }
+
+        .operator {
+            background-color: #ff9500;
+            color: white;
+        }
+
+        .clear {
+            background-color: #ff3b30;
+            color: white;
+        }
+
+        .equal {
+            background-color: #34b7f1;
+            color: white;
+            grid-column: span 2;
+        }
+    </style>
+</head>
+<body>
+    <div class="calculator">
+        <div class="display" id="display">0</div>
+        <div class="buttons">
+            <button class="clear" onclick="clearDisplay()">C</button>
+            <button onclick="appendNumber(7)">7</button>
+            <button onclick="appendNumber(8)">8</button>
+            <button onclick="appendNumber(9)">9</button>
+            <button class="operator" onclick="appendOperator('+')">+</button>
+            <button onclick="appendNumber(4)">4</button>
+            <button onclick="appendNumber(5)">5</button>
+            <button onclick="appendNumber(6)">6</button>
+            <button class="operator" onclick="appendOperator('-')">-</button>
+            <button onclick="appendNumber(1)">1</button>
+            <button onclick="appendNumber(2)">2</button>
+            <button onclick="appendNumber(3)">3</button>
+            <button class="operator" onclick="appendOperator('')"></button>
+            <button onclick="appendNumber(0)">0</button>
+            <button onclick="appendDecimal()">.</button>
+            <button class="equal" onclick="calculateResult()">=</button>
+            <button class="operator" onclick="appendOperator('/')">/</button>
+        </div>
+    </div>
+
+    <script>
+        let display = document.getElementById('display');
+        let currentInput = '0';
+        let currentOperator = '';
+        let firstNumber = '';
+        let secondNumber = '';
+
+        function clearDisplay() {
+            currentInput = '0';
+            firstNumber = '';
+            secondNumber = '';
+            currentOperator = '';
+            display.textContent = currentInput;
+        }
+
+        function appendNumber(number) {
+            if (currentInput === '0') {
+                currentInput = String(number);
+            } else {
+                currentInput += String(number);
+            }
+            display.textContent = currentInput;
+        }
+
+        function appendOperator(operator) {
+            if (firstNumber === '') {
+                firstNumber = currentInput;
+                currentOperator = operator;
+                currentInput = '0';
+            } else {
+                secondNumber = currentInput;
+                calculateResult();
+                firstNumber = display.textContent;
+                currentOperator = operator;
+                currentInput = '0';
+            }
+        }
+
+        function appendDecimal() {
+            if (!currentInput.includes('.')) {
+                currentInput += '.';
+                display.textContent = currentInput;
+            }
+        }
+
+        function calculateResult() {
+            secondNumber = currentInput;
+            let result;
+            firstNumber = parseFloat(firstNumber);
+            secondNumber = parseFloat(secondNumber);
+
+            switch (currentOperator) {
+                case '+':
+                    result = firstNumber + secondNumber;
+                    break;
+                case '-':
+                    result = firstNumber - secondNumber;
+                    break;
+                case '*':
+                    result = firstNumber * secondNumber;
+                    break;
+                case '/':
+                    if (secondNumber !== 0) {
+                        result = firstNumber / secondNumber;
+                    } else {
+                        result = 'Error';
+                    }
+                    break;
+                default:
+                    return;
+            }
+
+            currentInput = result.toString();
+            display.textContent = currentInput;
+            firstNumber = '';
+            secondNumber = '';
+            currentOperator = '';
+        }
+    </script>
+</body>
+</html>
